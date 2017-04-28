@@ -9,7 +9,7 @@ For now, kiwi have three execute file--MBR, Loader and kernel. Complied to get t
 
 ```
 nasm -I PATH_OF_INCLUDE -o mbr.bin mbr.S
-nasm -I PATH_OF_INCLUDED -f loader.bin loader.S
+nasm -I PATH_OF_INCLUDE -o loader.bin loader.S
 ```
 For kernel, things get more complicate. Kernel is implementd in different language in different code file. Genetate the target file separately, then link all target file to get kernel.bin file, AKA kernel image. For example the kernel main file is main.c, main.c call print file which is implemented in print.S file , print function deckaration in print.h file, the type used in print.h file defined in stdint.S. In general, we have 4 files associated with the kernel--main.c, print.S, print.h and stdint.S. We get the kernel ad follows:
 
@@ -28,4 +28,4 @@ dd if=LOADER.bin of=HERD_DISK.img bs=512 seek=2 count=3 conv=notrunct
 dd if=Kernel.bin of=HARD_DISK.img bs=512 seek=9 count=200 conv=notrunct
 ```
 #NOTE
-
+SO ON
