@@ -1,8 +1,10 @@
 #Introduction
+
 This is an exercise of elephant, I named my OS kiwi because I like kiwi. :)
 Anywaym have fun...
 
 #SOURCES
+
 For now, kiwi have three execute file--MBR, Loader and kernel. Complied to get these file,MBR and Loader are implemented in assembly, also part of kernel. Beside kernel, execute file are easy to get.For example:
 
 ```
@@ -26,3 +28,4 @@ dd if=LOADER.bin of=HERD_DISK.img bs=512 seek=2 count=3 conv=notrunct
 dd if=Kernel.bin of=HARD_DISK.img bs=512 seek=9 count=200 conv=notrunct
 ```
 #NOTE
+
