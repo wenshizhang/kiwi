@@ -1,50 +1,94 @@
-;主引导程序
-;-----------------------------------------------------------------
-SECTION MBR vstart=0x7c00
-	mov	ax,cs
-	mov	ds,ax
-	mov es,ax
-	mov ss,ax
-	mov fs,ax
-	mov gs,ax
-	mov sp,0x7c00	;直接把0x7c00这个地址存在sp寄存器里，所以并不用靠地址转换器，因此不用写成0x07c0
+;------------------------------------------------------------
+%include "boot.inc"
+SECTION MBR vstart=0x7c00         
+   mov ax,cs      
+   mov ds,ax
+   mov es,ax
+   mov ss,ax
+   mov fs,ax
+   mov sp,0x7c00
+   mov ax,0xb800
+   mov     ax, 0600h
+   mov     bx, 0700h
+   mov     cx, 0                
+   mov     dx, 184fh		   
+				
+				   
+   int     10h                  
 
-;清屏利用0x06中断号，上卷全部行，则可清屏
-;-------------------------------------------------------------------
-;INT 0x10	功能号：0x06	功能描述：上卷窗口
-;-------------------------------------------------------------------
-;输入
-;AH=功能号0x06
-;AL=上卷行数（如果是0，则表示全部）
-;（CL,CH） = 窗口左下角(X，Y)位置
-;(DL,DH) = 窗口右下角(X，Y)位置
-;无返回值
-	mov	ax,0x600
-	mov	bx,0x700
-	mov	cx,0						
-	mov	dx,0x184f
+   mov byte [gs:0x00],'1'
+   mov byte [gs:0x01],0xA4
 
-	int 0x10
+   mov byte [gs:0x02],' '
+   mov byte [gs:0x03],0xA4
+
+   mov byte [gs:0x04],'M'
+   mov byte [gs:0x05],0xA4	
+
+   mov byte [gs:0x06],'B'
+   mov byte [gs:0x07],0xA4
+
+   mov byte [gs:0x08],'R'
+   mov byte [gs:0x09],0xA4
+	 
+   mov eax,LOADER_START_SECTOR	 
+   mov bx,LOADER_BASE_ADDR      
+   mov cx,1			 
+   call rd_disk_m_16		 
+  
+   jmp LOADER_BASE_ADDR
+       
+rd_disk_m_16:	   
+      mov esi,eax	
+      mov di,cx		  
 
 
-;下面是获取光标位置
-;0x10终端的3功能号是表示回去光标位置
-	mov	ah,3
-	mov bh,0
-;输出是ch：光标开始行，cl：光标结束行
-;dh：光标所在行号，dl：光标所在列号
-	int 0x10
-;打印字符串
-;调用int0x10终端，13功能号
-	mov	ax,message
-	mov	bp,ax
-	mov cx,5
-	mov ax,0x1301
-	mov	bx,0x2
-	int 0x10
+      mov dx,0x1f2
+      mov al,cl
+      out dx,al         
 
-;字符打印结束
-	jmp $
-	message db "1 MBR"
-	times 510-($-$$)	db 0
-	db 0x55,0xaa
+      mov eax,esi	   
+
+      mov dx,0x1f3                       
+      out dx,al                          
+
+      mov cl,8
+      shr eax,cl
+      mov dx,0x1f4
+      out dx,al
+
+      shr eax,cl
+      mov dx,0x1f5
+      out dx,al
+
+      shr eax,cl
+      and al,0x0f	   
+	  or al,0xe0	   
+      mov dx,0x1f6
+      out dx,al
+
+      mov dx,0x1f7
+      mov al,0x20                        
+      out dx,al
+
+  .not_ready:
+      nop
+      in al,dx
+      and al,0x88	
+      cmp al,0x08
+      jnz .not_ready	   
+
+      mov ax, di
+      mov dx, 256
+      mul dx
+      mov cx, ax	
+      mov dx, 0x1f0
+  .go_on_read:
+      in ax,dx
+      mov [bx],ax
+      add bx,2		  
+      loop .go_on_read
+      ret
+
+   times 510-($-$$) db 0
+   db 0x55,0xaa
