@@ -28,4 +28,5 @@ dd if=LOADER.bin of=HERD_DISK.img bs=512 seek=2 count=3 conv=notrunct
 dd if=Kernel.bin of=HARD_DISK.img bs=512 seek=9 count=200 conv=notrunct
 ```
 #NOTE
+
 SO ON
