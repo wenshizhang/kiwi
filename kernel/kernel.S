@@ -3,31 +3,47 @@
 %define ZERO push 0		 ; 若在相关的异常中cpu没有压入错误码,为了统一栈中格式,就手工压入一个0
 
 extern put_str			 ;声明外部函数
+extern idt_table		 ;声明interupt中定义的idt_table
 
 section .data
-intr_str db "interrupt occur!", 0xa, 0
 global intr_entry_table
 intr_entry_table:
 
-%macro VECTOR 2
+%macro VECTOR	2				;%macro  宏名字		参数个数
 section .text
-intr%1entry:		 ; 每个中断处理程序都要压入中断向量号,所以一个中断类型一个中断处理程序，自己知道自己的中断向量号是多少
-   %2
-   push intr_str
-   call put_str
-   add esp,4			 ; 跳过参数
+intr%lengtry:
 
-   ; 如果是从片上进入的中断,除了往从片上发送EOI外,还要往主片上发送EOI 
-   mov al,0x20                   ; 中断结束命令EOI
-   out 0xa0,al                   ; 向从片发送
-   out 0x20,al                   ; 向主片发送
+	%2
+	push ds
+	push es
+	push fs
+	push gs
+	pushad			;pushad指令压入所有的32位寄存器
+	
+	;如果从片进入中断，除了给主片发送eoi，还要给从片发送eoi
+	mov al,0x20
+	out 0xa0,al			;从片发送
+	out	0x20,al			;主片发送
 
-   add esp,4			 ; 跨过error_code
-   iret				 ; 从中断返回,32位下等同指令iretd
-
+	push %1
+	call [idt_table + %1*4]			;idt_table+%1*4 表示该中断在idt_table地址，其中存储了intr_handler函数
+	jmp intr_exit					;中断处理结束，调用exit函数
 section .data
-   dd    intr%1entry	 ; 存储各个中断入口程序的地址，形成intr_entry_table数组
+	dd intr%lentry
+
 %endmacro
+
+section .text
+global intr_exit
+intr_exit:
+	add esp,4		;跳过中断号
+	popad			;32位寄存器出栈
+	pop gs			;通用寄存器一次出栈，注意顺序和入栈相反
+	pop fs
+	pop es
+	pop ds
+	add esp,4			;跳过error_code
+	iretd
 
 VECTOR 0x00,ZERO
 VECTOR 0x01,ZERO
