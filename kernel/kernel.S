@@ -11,7 +11,7 @@ intr_entry_table:
 
 %macro VECTOR	2				;%macro  宏名字		参数个数
 section .text
-intr%lengtry:
+intr%1entry:
 
 	%2
 	push ds
@@ -28,8 +28,9 @@ intr%lengtry:
 	push %1
 	call [idt_table + %1*4]			;idt_table+%1*4 表示该中断在idt_table地址，其中存储了intr_handler函数
 	jmp intr_exit					;中断处理结束，调用exit函数
+
 section .data
-	dd intr%lentry
+	dd	intr%1entry
 
 %endmacro
 

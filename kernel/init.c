@@ -4,6 +4,7 @@
 
 void init_all()
 {
-	put_str("init_all\n");
+	put_str("init_all start\n");
 	idt_init();
+	put_str("init_all done");
 }
