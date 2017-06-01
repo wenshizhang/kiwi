@@ -1,8 +1,10 @@
 #Introduction
+
 进行到这个时刻，已经有了很多个文件互相调用。阅读此文档获取相应的信息。
 
 #Structure
 ##kernel
+
   这个目录下存放了kernel相关的实现，其中`XXX.h`都是`XXXX.c`源码中函数的实现，不再赘述。
   调用的逻辑如下：
 ```
@@ -16,20 +18,31 @@ main->init_all->interrupt_init
 * interrupt.c:实现了interrpute初始化
 * global.h：定义了一些全局的描述符和变量
 * main.c：主函数
+
 ##build
+
 OS越来越大，实现的模块也越来越多了，为了统一起见建立目录用来存放全部目标文件和内核文件。
+
 ##include
+
 MBR和loader需要用到的全局描述符,定义在boot.inc中
+
 ##lib
+
 定了了一些类似于库的东西。
 * print.c：定了了打印函数，包括字符串、字符和数字的打印
 * stdint.h：封装了类型
+
 ##device
+
 * timer.c：操作计时器8253的函数都定义在此模块中，目前定义了`timer_init`函数。
+
 ##others
+
 目录中实现了MBR和loader，这些都是独立于kernel的。生成可自行文件以后，分别刻入硬盘的指定位置即可。
 
 #编译方法
+
 MBR和loader可执行文件生成的方法是：
 
 ```
