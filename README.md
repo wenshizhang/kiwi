@@ -1,8 +1,10 @@
+
 #Introduction
 
 进行到这个时刻，已经有了很多个文件互相调用。阅读此文档获取相应的信息。
 
 #Structure
+
 ##kernel
 
   这个目录下存放了kernel相关的实现，其中`XXX.h`都是`XXXX.c`源码中函数的实现，不再赘述。
@@ -57,15 +59,19 @@ dd if=loader.bin of=disk_name bs=512 seek=2 count=3 conv=notrunc
 
 还是遵循以上的方法，分别编译每一个模块，然后使用ld链接成一个可执行文件。这些模块有的用汇编语言实现，有的用C语言实现。统一编译成目标文件，使用ld连接器链接成内核镜像。
 C语言实现的模块编译指令如下，gcc `-c`参数指定只编译不执行。ld链接器要求目标文件是同一个格式的。因此使用`-m32`指定生成32位目标文件。
+
 ```
 gcc -m32 -I NAME_OF_EXTRIDIR -c -fno-builtin -o PATH_OF_TARGET PATH_OF_SOURCE
 ```
+
 汇编模块编译命令：
+
 ```
 nasm -f elf32 -o PATH_OF_TARGET PATH_OF_SOURCE
 ```
 
 链接命令，指定生成386平台的elf文件。
+
 ```
 ld -m elf_i386 -Ttext 0xc0001500 -e main -o kernel.bin main.o init.o interrupt.o kernel.o print.o 
 ```
