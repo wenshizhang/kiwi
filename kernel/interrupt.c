@@ -6,7 +6,7 @@
 
 #define	EFLAGS_IF  0x00000200	//eflag 寄存器的if位是1
 //获取eflags寄存器的值
-#define GET_EFLAGS(EFLAG_VAR) asm volatil("pushfl; popl %0" : "=g" (EFLAG_VAR))
+#define GET_EFLAGS(EFLAG_VAR) asm volatile("pushfl; popl %0" : "=g" (EFLAG_VAR))
 
 #define PIC_M_CTRL 0x20	       // 这里用的可编程中断控制器是8259A,主片的控制端口是0x20
 #define PIC_M_DATA 0x21	       // 主片的数据端口是0x21
