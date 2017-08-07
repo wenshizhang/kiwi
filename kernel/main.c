@@ -5,7 +5,7 @@
 
 void k_thread_a(void *);
 
-void main(void)
+int main(void)
 {
 	put_str("I am kernel\n");
 	init_all();
