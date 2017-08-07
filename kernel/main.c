@@ -1,18 +1,28 @@
 #include "print.h"
 #include "init.h"
 #include "debug.h"
+#include "memory.h"
+
+void k_thread_a(void *);
 
 void main(void)
 {
 	put_str("I am kernel\n");
 	init_all();
 
-	put_str("before assert\n");
-	ASSERT(1==2);
-	put_str("after assert\n");
-
-//	put_str("init all done\n");
-	put_str("nnnnnnnnnnnnnnnnnnnnnnnnnnnnn");
-	asm volatile("sti");				//为演示中断处理，临时开中断
+	thread_start("k_thread_a",31,k_thread_a,"argA");
+	
 	while(1);
+	return 0;
+}
+
+//用void*表示通用参数
+
+void k_thread_a(void *arg)
+{
+	char *para = arg;
+	while(1)
+	{
+		put_str(para);
+	}
 }

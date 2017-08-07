@@ -48,10 +48,10 @@ static void pic_init(void) {
    outb (PIC_S_DATA, 0x01);    // ICW4: 8086模式, 正常EOI
 
    /* 打开主片上IR0,也就是目前只接受时钟产生的中断 */
-   outb (PIC_M_DATA, 0xfe);
+   outb (PIC_M_DATA, 0xff);
    outb (PIC_S_DATA, 0xff);
 
-   put_str("   pic_init done\n");
+ //  put_str("   pic_init done\n");
 }
 
 /* 创建中断门描述符 */
@@ -69,7 +69,7 @@ static void idt_desc_init(void) {
    for (i = 0; i < IDT_DESC_CNT; i++) {
       make_idt_desc(&idt[i], IDT_DESC_ATTR_DPL0, intr_entry_table[i]); 
    }
-   put_str("   idt_desc_init done\n");
+//   put_str("   idt_desc_init done\n");
 }
 
 /* 通用的中断处理函数,一般用在异常出现时的处理 */
@@ -118,7 +118,7 @@ static void exception_init(void) {			    // 完成一般中断处理函数注册
 
 /*完成有关中断的所有初始化工作*/
 void idt_init() {
-   put_str("idt_init start\n");
+//   put_str("idt_init start\n");
    idt_desc_init();	   // 初始化中断描述符表
    exception_init();	   // 异常名初始化并注册通常的中断处理函数
    pic_init();		   // 初始化8259A
@@ -126,7 +126,7 @@ void idt_init() {
    /* 加载idt */
    uint64_t idt_operand = ((sizeof(idt) - 1) | ((uint64_t)(uint32_t)idt << 16));
    asm volatile("lidt %0" : : "m" (idt_operand));
-   put_str("idt_init done\n");
+//   put_str("idt_init done\n");
 }
 
 enum intr_status intr_enable()				//开中断，并返回开中断之前的状态

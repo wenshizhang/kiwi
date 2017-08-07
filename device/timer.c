@@ -30,10 +30,10 @@ static void frequency_set(uint8_t counter_port,
 
 void timer_init()
 {
-	put_str("timer init start\n");
+//	put_str("timer init start\n");
 
 	frequency_set(COUNTER0_PORT,COUNTER0_NO,READ_WRITE_LATCH,COUNTER0_MODE,COUNTER0_VALUE);
 
-	put_str("timer init done\n");
+//	put_str("timer init done\n");
 }
 
