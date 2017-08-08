@@ -4,9 +4,9 @@
 all:build/kernel.bin 
 
 build/kernel.bin:build/main.o build/print.o build/kernel.o build/init.o build/interrupt.o \
-		build/timer.o build/debug.o build/string.o build/bitmap.o build/memory.o build/thread.o
+		build/timer.o build/debug.o build/string.o build/bitmap.o build/memory.o build/thread.o build/list.o
 	ld -m elf_i386 -Ttext 0xc0001500 -e main -o build/kernel.bin build/main.o  build/interrupt.o \
-	 build/init.o  build/print.o build/kernel.o build/timer.o build/debug.o build/string.o build/bitmap.o build/memory.o build/thread.o
+	 build/init.o  build/print.o build/kernel.o build/timer.o build/debug.o build/string.o build/bitmap.o build/memory.o build/thread.o build/list.o
 		cp build/kernel.bin /home/shiwen/bochs 
 		@echo "create kernel image done"
 
@@ -35,6 +35,8 @@ build/memory.o:kernel/memory.c
 	gcc -m32 -I lib/ -I lib/kernel/ -I kernel/ -I device/ -c -fno-builtin -o build/memory.o kernel/memory.c
 build/thread.o:thread/thread.c
 	gcc -m32 -I lib/ -I lib/kernel/ -I kernel/ -I device/ -c -fno-builtin -o build/thread.o thread/thread.c
+build/list.o:lib/list.c
+	gcc -m32 -I lib/ -I lib/kernel/ -I kernel/ -I device/ -c -fno-builtin -o build/list.o lib/list.c
 
 
 build/kernel.o:kernel/kernel.S

@@ -7,11 +7,11 @@
 	(struct_type* )((int)elem_ptr - offset(struct_type, struct_member_name))
 
 //定义链表节点结构
-//只定义了前继节点和后继节点
+//只定义了前继节点和后继节点,不需要数据
 struct list_elem
 {
 	struct list_elem *prev;
-	struct list_ekem *next;
+	struct list_elem *next;
 };
 
 //定义节点
@@ -26,7 +26,7 @@ struct list
 typedef bool(function) (struct list_elem* ,int art);
 
 void list_init(struct list*);
-voud list_insert_before(struct list_elem* before,struct list_elem* elem);
+void list_insert_before(struct list_elem* before,struct list_elem* elem);
 void list_push(struct list *plist, struct list_elem* elem);
 void list_iterate(struct list* plist);
 void list_append(struct list* plist, struct list_elem* elem);

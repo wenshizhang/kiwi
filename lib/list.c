@@ -3,10 +3,10 @@
 
 void list_init(struct list* plist)
 {
-	list->head.prev = NULL;			//head have no prev
-	list->head.next = &list->tail;
-	list->tail.prev = &list->head;
-	list->tail.next = NULL;			//tail have no next
+	plist->head.prev = NULL;			//head have no prev
+	plist->head.next = &plist->tail;
+	plist->tail.prev = &plist->head;
+	plist->tail.next = NULL;			//tail have no next
 }
 
 //elem插在元素before之前
@@ -14,7 +14,7 @@ void list_insert_before(struct list_elem* before,struct list_elem* elem)
 {
 	enum intr_status old_status = intr_disable();
 	//更新before原prev为elem
-	before->prev ->next = elem;
+	before->prev->next = elem;
 
 	//elem的prev成为了before的原prev
 	elem->prev = before->prev;
@@ -34,7 +34,7 @@ void list_push(struct list* plist, struct list_elem* elem)
 
 void list_append(struct list* plist, struct list_elem* elem)
 {
-	list_insert_before(plist-tail,elem);			//链表尾前插入elem
+	list_insert_before(&plist->tail , elem);			//链表尾前插入elem
 }
 
 //使元素pelem脱离链表
@@ -57,7 +57,7 @@ struct list_elem* list_pop(struct list* plist)
 }
 
 //从链表中查找到obj_elem，成功时返回true，失败返回false
-bool elem_fine(struct list* plist, struct list_elem* obj_elem)
+bool elem_find(struct list* plist, struct list_elem* obj_elem)
 {
 	struct list_elem* elem = plist->head.next;
 	while(elem != &plist->tail)
@@ -79,29 +79,24 @@ struct list_elem* list_traversal(struct list* plist, function func, int arg)
 {
 	struct list_elem*  elem = plist->head.next;
 	//判空
-	if(list_empty(plsit))
+	if(list_empty(plist))
 		return NULL;
 
-	while(elem != plist->tail)
+	while(elem != &plist->tail)
 	{
 		if(func(elem,arg))
-		{
 			return elem;
-		}
-
 		elem = elem->next;
 	}
 
 	return NULL;
 }
 
-
 //返回链表长度
 
 uint32_t list_len(struct list* plist)
 {
 	struct list_elem* elem = plist->head.next;
-
 	uint32_t length = 0;
 
 	while(elem != &plist->tail)
@@ -113,7 +108,7 @@ uint32_t list_len(struct list* plist)
 	return length;
 }
 
-bool list_empty(struct list* plsit)
+bool list_empty(struct list* plist)
 {
 	if(plist->head.next == &plist->tail)
 		return true;
